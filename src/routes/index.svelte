@@ -1,2 +1,2 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque laboriosam blanditiis cumque dolorem rerum sunt quisquam itaque nisi aspernatur vero et doloribus error eos voluptas quibusdam, ex in ipsam ratione.
+  
