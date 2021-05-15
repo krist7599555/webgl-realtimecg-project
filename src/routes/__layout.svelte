@@ -6,4 +6,4 @@
 	<a href="/example-4">Example 4</a>
 </nav>
 
-<slot></slot>
+<slot />

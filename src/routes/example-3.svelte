@@ -1,13 +1,24 @@
+<canvas bind:this="{canvas}" style="width: 100%; height: 100%"></canvas>
+<slot />
+
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { createProgramInfo, createBufferInfoFromArrays, setBuffersAndAttributes, drawBufferInfo, setUniforms } from 'twgl.js';
-	let canvas: HTMLCanvasElement;
-	onMount(async () => {
-    canvas.width = canvas.clientWidth
-    canvas.height = canvas.clientHeight
-		const gl = canvas.getContext('webgl');
-		const programInfo = createProgramInfo(gl, [
-			` 
+import { onMount } from 'svelte';
+import {
+	createProgramInfo,
+	createBufferInfoFromArrays,
+	setBuffersAndAttributes,
+	drawBufferInfo,
+	setUniforms
+} from 'twgl.js';
+
+let canvas: HTMLCanvasElement;
+
+onMount(async () => {
+	canvas.width = canvas.clientWidth;
+	canvas.height = canvas.clientHeight;
+	const gl = canvas.getContext('webgl');
+	const programInfo = createProgramInfo(gl, [
+		` 
         uniform mat4 u_model;
         uniform mat4 u_view;
         uniform mat4 u_projection;
@@ -21,27 +32,24 @@
           gl_Position = vec4(a_position.xyz, 1);
         }
       `,
-			` 
+		` 
         precision mediump float;
         varying vec3 v_normal;
 
         void main() {
           gl_FragColor = vec4(1, 0, 0, 1);
         }`
-		]);
-    gl.useProgram(programInfo.program)
+	]);
+	gl.useProgram(programInfo.program);
 
-    const bufferInfo = createBufferInfoFromArrays(gl, {
-      a_position: { numComponents: 3, data: [-1, -1, 0, 1, -1, 0, 1, 1, 0] }
-    });
-    setUniforms(programInfo,  {
-      // time: time * 0.001,
-      // resolution: [gl.canvas.width, gl.canvas.height],
-    });
-    setBuffersAndAttributes(gl, programInfo, bufferInfo);
-    drawBufferInfo(gl, bufferInfo);
+	const bufferInfo = createBufferInfoFromArrays(gl, {
+		a_position: { numComponents: 3, data: [-1, -1, 0, 1, -1, 0, 1, 1, 0] }
 	});
+	setUniforms(programInfo, {
+		// time: time * 0.001,
+		// resolution: [gl.canvas.width, gl.canvas.height],
+	});
+	setBuffersAndAttributes(gl, programInfo, bufferInfo);
+	drawBufferInfo(gl, bufferInfo);
+});
 </script>
-
-<canvas bind:this={canvas} style="width: 100%; height: 100%" />
-<slot></slot>
