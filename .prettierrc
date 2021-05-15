@@ -3,9 +3,9 @@
 	"singleQuote": true,
 	"trailingComma": "none",
 	"printWidth": 100,
-	"svelteSortOrder" : "options-markup-styles-scripts",
-  "svelteStrictMode": true,
-  "svelteBracketNewLine": false,
-  "svelteAllowShorthand": false,
-  "svelteIndentScriptAndStyle": false
+	"svelteSortOrder": "options-markup-styles-scripts",
+	"svelteStrictMode": true,
+	"svelteBracketNewLine": false,
+	"svelteAllowShorthand": false,
+	"svelteIndentScriptAndStyle": false
 }

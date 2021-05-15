@@ -1,6 +1,6 @@
 {
-  "svelte.plugin.svelte.format.config.svelteSortOrder": "options-markup-scripts-styles",
-  "[svelte]": {
-    "editor.defaultFormatter": "svelte.svelte-vscode"
-  },
+	"svelte.plugin.svelte.format.config.svelteSortOrder": "options-markup-scripts-styles",
+	"[svelte]": {
+		"editor.defaultFormatter": "svelte.svelte-vscode"
+	}
 }
