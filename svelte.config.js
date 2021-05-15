@@ -7,13 +7,8 @@ const config = {
 	// for more information about preprocessors
 	preprocess: preprocess(),
 	kit: {
-		host: "https://krist7599555.github.io",
+		host: "https://webgl-realtimecg-project.pages.dev",
 		adapter: adapter(),
-		paths: {
-			base: "/webgl-realtimecg-project"
-			// https://krist7599555.github.io/webgl-realtimecg-project
-		},
-		// hydrate the <div id="svelte"> element in src/app.html
 		target: '#svelte'
 	}
 };

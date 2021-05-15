@@ -1,10 +1,10 @@
 {
 	"name": "webgl-realtimecg-project",
 	"version": "0.0.1",
-	"homepage": "https://krist7599555.github.io/webgl-realtimecg-project",
+	"homepage": "https://webgl-realtimecg-project.pages.dev",
 	"scripts": {
 		"dev": "svelte-kit dev",
-		"build": "svelte-kit build; rm -rf docs; mv build docs",
+		"build": "svelte-kit build",
 		"preview": "svelte-kit preview",
 		"lint": "prettier --check --plugin-search-dir=. . && eslint --ignore-path .gitignore .",
 		"format": "prettier --write --plugin-search-dir=. ."
