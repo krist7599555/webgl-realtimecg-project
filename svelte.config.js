@@ -7,7 +7,7 @@ const config = {
 	// for more information about preprocessors
 	preprocess: preprocess(),
 	kit: {
-		// host: "https://krist7599555.github.io",
+		host: "https://krist7599555.github.io",
 		adapter: adapter(),
 		paths: {
 			base: "/webgl-realtimecg-project"
