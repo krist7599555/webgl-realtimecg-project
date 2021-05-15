@@ -15,6 +15,7 @@ import {
 
 let canvas: HTMLCanvasElement;
 onMount(() => {
+	console.log('example -1')
 	const scene = new Scene();
 	const box = new Mesh(new SphereGeometry(5, 32, 32), new MeshNormalMaterial());
 	box.position.set(0, 0, 0);
