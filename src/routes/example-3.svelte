@@ -1,4 +1,4 @@
-<canvas bind:this="{canvas}" style="width: 100%; height: 100%"></canvas>
+<canvas bind:this={canvas} style="width: 100%; height: 100%" />
 <slot />
 
 <script lang="ts">

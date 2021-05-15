@@ -1,5 +1,5 @@
-<svelte:window on:resize="{() => (must_resize = true)}" />
-<canvas bind:this="{canvas}" style="width: 100%; height: 100%"></canvas>
+<svelte:window on:resize={() => (must_resize = true)} />
+<canvas bind:this={canvas} style="width: 100%; height: 100%" />
 <slot />
 
 <script lang="ts">
