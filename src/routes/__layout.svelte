@@ -1,9 +1,24 @@
 <nav>
-	<a href="/">Home</a>
-	<a href="/example-1">Example 1</a>
-	<a href="/example-2">Example 2</a>
-	<a href="/example-3">Example 3</a>
-	<a href="/example-4">Example 4</a>
+	<a href="/">readme</a>
+	<a href="/example-1">three-normal</a>
+	<a href="/example-2">three-gltf</a>
+	<a href="/example-3">red-triangle</a>
+	<a href="/example-4">framebufferobject</a>
 </nav>
 
+<head>
+	<link rel="stylesheet" href="/main.css">
+</head>
+
 <slot />
+
+<style>
+	nav {
+	  display: flex;
+    justify-content: center;
+		overflow-x: scroll;
+	}
+	nav > a {
+    padding: 4px
+	}
+</style>
