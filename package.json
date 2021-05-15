@@ -1,9 +1,10 @@
 {
 	"name": "webgl-realtimecg-project",
 	"version": "0.0.1",
+	"homepage": "https://krist7599555.github.io/webgl-realtimecg-project",
 	"scripts": {
 		"dev": "svelte-kit dev",
-		"build": "svelte-kit build",
+		"build": "svelte-kit build; rm -rf docs; mv build docs",
 		"preview": "svelte-kit preview",
 		"lint": "prettier --check --plugin-search-dir=. . && eslint --ignore-path .gitignore .",
 		"format": "prettier --write --plugin-search-dir=. ."
@@ -26,6 +27,7 @@
 	"type": "module",
 	"dependencies": {
 		"@math.gl/core": "^3.4.2",
+		"@sveltejs/adapter-static": "^1.0.0-next.9",
 		"lodash": "^4.17.21",
 		"three": "^0.128.0",
 		"twgl.js": "^4.19.1"
