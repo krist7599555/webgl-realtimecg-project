@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-this-alias */
-// @ts-nocheck
 import {
 	AnimationClip,
 	Bone,
@@ -67,6 +68,10 @@ import {
 } from 'three';
 
 class GLTFLoader extends Loader {
+	dracoLoader: any;
+	ktx2Loader: any;
+	meshoptDecoder: any;
+	pluginCallbacks: any[];
 	constructor(manager?: LoadingManager) {
 		super(manager);
 
@@ -348,6 +353,9 @@ const EXTENSIONS = {
  * Specification: https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Khronos/KHR_lights_punctual
  */
 class GLTFLightsExtension {
+	parser: any;
+	name: string;
+	cache: { refs: {}; uses: {}; };
 	constructor(parser) {
 		this.parser = parser;
 		this.name = EXTENSIONS.KHR_LIGHTS_PUNCTUAL;
@@ -462,6 +470,7 @@ class GLTFLightsExtension {
  * Specification: https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Khronos/KHR_materials_unlit
  */
 class GLTFMaterialsUnlitExtension {
+	name: string;
 	constructor() {
 		this.name = EXTENSIONS.KHR_MATERIALS_UNLIT;
 	}
@@ -503,6 +512,8 @@ class GLTFMaterialsUnlitExtension {
  * Specification: https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Khronos/KHR_materials_clearcoat
  */
 class GLTFMaterialsClearcoatExtension {
+	parser: any;
+	name: string;
 	constructor(parser) {
 		this.parser = parser;
 		this.name = EXTENSIONS.KHR_MATERIALS_CLEARCOAT;
@@ -577,6 +588,8 @@ class GLTFMaterialsClearcoatExtension {
  * Draft: https://github.com/KhronosGroup/glTF/pull/1698
  */
 class GLTFMaterialsTransmissionExtension {
+	parser: any;
+	name: string;
 	constructor(parser) {
 		this.parser = parser;
 		this.name = EXTENSIONS.KHR_MATERIALS_TRANSMISSION;
@@ -623,6 +636,8 @@ class GLTFMaterialsTransmissionExtension {
  * Specification: https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Khronos/KHR_texture_basisu
  */
 class GLTFTextureBasisUExtension {
+	parser: any;
+	name: string;
 	constructor(parser) {
 		this.parser = parser;
 		this.name = EXTENSIONS.KHR_TEXTURE_BASISU;
@@ -663,6 +678,9 @@ class GLTFTextureBasisUExtension {
  * Specification: https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Vendor/EXT_texture_webp
  */
 class GLTFTextureWebPExtension {
+	parser: any;
+	name: string;
+	isSupported: any;
 	constructor(parser) {
 		this.parser = parser;
 		this.name = EXTENSIONS.EXT_TEXTURE_WEBP;
@@ -727,6 +745,8 @@ class GLTFTextureWebPExtension {
  * Specification: https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Vendor/EXT_meshopt_compression
  */
 class GLTFMeshoptCompression {
+	name: string;
+	parser: any;
 	constructor(parser) {
 		this.name = EXTENSIONS.EXT_MESHOPT_COMPRESSION;
 		this.parser = parser;
@@ -785,6 +805,10 @@ const BINARY_EXTENSION_HEADER_LENGTH = 12;
 const BINARY_EXTENSION_CHUNK_TYPES = { JSON: 0x4e4f534a, BIN: 0x004e4942 };
 
 class GLTFBinaryExtension {
+	name: string;
+	content: any;
+	body: any;
+	header: { magic: string; version: number; length: number; };
 	constructor(data) {
 		this.name = EXTENSIONS.KHR_BINARY_GLTF;
 		this.content = null;
@@ -844,6 +868,9 @@ class GLTFBinaryExtension {
  * Specification: https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Khronos/KHR_draco_mesh_compression
  */
 class GLTFDracoMeshCompressionExtension {
+	name: string;
+	json: any;
+	dracoLoader: any;
 	constructor(json, dracoLoader) {
 		if (!dracoLoader) {
 			throw new Error('THREE.GLTFLoader: No DRACOLoader instance provided.');
@@ -910,6 +937,7 @@ class GLTFDracoMeshCompressionExtension {
  * Specification: https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Khronos/KHR_texture_transform
  */
 class GLTFTextureTransformExtension {
+	name: string;
 	constructor() {
 		this.name = EXTENSIONS.KHR_TEXTURE_TRANSFORM;
 	}
@@ -954,6 +982,12 @@ class GLTFTextureTransformExtension {
  */
 
 class GLTFMeshStandardSGMaterial extends MeshStandardMaterial {
+	isGLTFSpecularGlossinessMaterial: boolean;
+	_extraUniforms: { specular: { value: Color; }; glossiness: { value: number; }; specularMap: { value: any; }; glossinessMap: { value: any; }; };
+	specularMap: any;
+	specular: any;
+	glossinessMap: any;
+	glossiness: any;
 	constructor(params) {
 		super();
 
@@ -1102,6 +1136,8 @@ class GLTFMeshStandardSGMaterial extends MeshStandardMaterial {
 }
 
 class GLTFMaterialsPbrSpecularGlossinessExtension {
+	name: string;
+	specularGlossinessParams: string[];
 	constructor() {
 		this.name = EXTENSIONS.KHR_MATERIALS_PBR_SPECULAR_GLOSSINESS;
 
@@ -1234,6 +1270,7 @@ class GLTFMaterialsPbrSpecularGlossinessExtension {
  * Specification: https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Khronos/KHR_mesh_quantization
  */
 class GLTFMeshQuantizationExtension {
+	name: string;
 	constructor() {
 		this.name = EXTENSIONS.KHR_MESH_QUANTIZATION;
 	}
@@ -1246,6 +1283,9 @@ class GLTFMeshQuantizationExtension {
 // Spline Interpolation
 // Specification: https://github.com/KhronosGroup/glTF/blob/master/specification/2.0/README.md#appendix-c-spline-interpolation
 class GLTFCubicSplineInterpolant extends Interpolant {
+	beforeStart_: (index: any) => any;
+	afterEnd_: (index: any) => any;
+	interpolate_: (i1: any, t0: any, t: any, t1: any) => any;
 	constructor(parameterPositions, sampleValues, sampleSize, resultBuffer) {
 		super(parameterPositions, sampleValues, sampleSize, resultBuffer);
 	}
@@ -1382,7 +1422,7 @@ const ATTRIBUTES = {
 	JOINTS_0: 'skinIndex'
 };
 
-const PATH_PROPERTIES = {
+const PATH_PROPERTIES: any = {
 	scale: 'scale',
 	translation: 'position',
 	rotation: 'quaternion',
@@ -1625,14 +1665,27 @@ function getNormalizedComponentScale(constructor) {
 /* GLTF PARSER */
 
 class GLTFParser {
-	constructor(json = {}, options = {}) {
+	fileLoader: any;
+	json: any;
+	extensions: any;
+	plugins: any;
+	options: any;
+	cache: any;
+	associations: Map<any, any>;
+	primitiveCache: any;
+	meshCache: { refs: any; uses: any; };
+	cameraCache: { refs: any; uses: any; };
+	lightCache: { refs: any; uses: any; };
+	nodeNamesUsed: any;
+	textureLoader: any;
+	constructor(json: any = {}, options: any = {}) {
 		this.json = json;
 		this.extensions = {};
 		this.plugins = {};
 		this.options = options;
 
 		// loader object cache
-		this.cache = new GLTFRegistry();
+		this.cache = GLTFRegistry();
 
 		// associations between Three.js objects and glTF elements
 		this.associations = new Map();
@@ -2152,7 +2205,7 @@ class GLTFParser {
 					// sometimes contains alpha.
 					//
 					// https://en.wikipedia.org/wiki/Portable_Network_Graphics#File_header
-					const colorType = new DataView(bufferView, 25, 1).getUint8(0, false);
+					const colorType = new DataView(bufferView, 25, 1).getUint8(0);
 					hasAlpha = colorType === 6 || colorType === 4 || colorType === 3;
 				}
 
@@ -2171,7 +2224,7 @@ class GLTFParser {
 					let onLoad = resolve;
 
 					if (loader.isImageBitmapLoader === true) {
-						onLoad = function (imageBitmap) {
+						onLoad = function (imageBitmap: any) {
 							resolve(new CanvasTexture(imageBitmap));
 						};
 					}
@@ -2179,7 +2232,7 @@ class GLTFParser {
 					loader.load(resolveURL(sourceURI, options.path), onLoad, undefined, reject);
 				});
 			})
-			.then(function (texture) {
+			.then(function (texture: any) {
 				// Clean up resources and configure Texture.
 
 				if (isObjectURL === true) {
@@ -2376,7 +2429,7 @@ class GLTFParser {
 		const materialDef = json.materials[materialIndex];
 
 		let materialType;
-		const materialParams = {};
+		const materialParams: any = {};
 		const materialExtensions = materialDef.extensions || {};
 
 		const pending = [];
@@ -2750,7 +2803,7 @@ class GLTFParser {
 	loadSkin(skinIndex) {
 		const skinDef = this.json.skins[skinIndex];
 
-		const skinEntry = { joints: skinDef.joints };
+		const skinEntry: any = { joints: skinDef.joints };
 
 		if (skinDef.inverseBindMatrices === undefined) {
 			return Promise.resolve(skinEntry);
@@ -3359,5 +3412,5 @@ function toTrianglesDrawMode(geometry, drawMode) {
 }
 
 import type { GLTFLoader as _GLTFLoaderType } from 'three/examples/jsm/loaders/GLTFLoader';
-const gltf: _GLTFLoaderType & { new (manager?: LoadingManager): _GLTFLoaderType } = GLTFLoader;
+const gltf: _GLTFLoaderType & { new (manager?: LoadingManager): _GLTFLoaderType } = GLTFLoader as any;
 export { gltf as GLTFLoader };

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 // @ts-nocheck
 
 import {
@@ -1011,7 +1013,7 @@ class OrbitControls extends EventDispatcher {
 //    Pan - left mouse, or arrow keys / touch: one-finger move
 
 class MapControls extends OrbitControls {
-	constructor(object, domElement) {
+	constructor(object: any, domElement: any) {
 		super(object, domElement);
 
 		this.screenSpacePanning = false; // pan orthogonal to world-space direction camera.up
