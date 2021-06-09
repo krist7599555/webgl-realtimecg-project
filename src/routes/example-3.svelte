@@ -1,4 +1,8 @@
-<canvas bind:this={canvas} style="width: 100%; height: 100%" />
+<canvas bind:this={canvas} style="width: 100%; height: 60%" />
+<article class='container'>
+	<h1>Triangle</h1>
+	<p>just show that webgl is just 2D graphic render</p>
+</article>
 <slot />
 
 <script lang="ts">

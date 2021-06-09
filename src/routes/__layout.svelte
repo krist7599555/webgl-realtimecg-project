@@ -4,6 +4,7 @@
 	<a href="/example-2">three-gltf</a>
 	<a href="/example-3">red-triangle</a>
 	<a href="/example-4">framebufferobject</a>
+	<a href="/example-5">shadow-map</a>
 </nav>
 
 <head>

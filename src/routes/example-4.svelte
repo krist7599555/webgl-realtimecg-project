@@ -1,5 +1,16 @@
 <svelte:window on:resize={() => (must_resize = true)} />
-<canvas bind:this={canvas} style="width: 100%; height: 100%" />
+<canvas bind:this={canvas} style="width: 100%; height: 60%" />
+<article class="container">
+	<h1>Framebuffer</h1>
+	<p>frambuffer can be draw and export as 2D texture</p>
+	<p>also know a texhnique to create LUMINANCE texture 2D</p>
+	<p>
+		code: 
+		<a href='https://github.com/krist7599555/webgl-realtimecg-project/tree/master/src/routes/example-5.svelte' target="_blank">
+			https://github.com/krist7599555/webgl-realtimecg-project/tree/master/src/example-5.svelte
+		</a>
+	</p>
+</article>
 <slot />
 
 <script lang="ts">

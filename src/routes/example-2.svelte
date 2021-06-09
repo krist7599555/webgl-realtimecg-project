@@ -1,4 +1,10 @@
-<canvas bind:this={canvas} style="width: 100%; height: 100%" />
+<canvas bind:this={canvas} />
+<article class="container">
+	<h1>GLTF</h1>
+	<p>test that my GLTF file from blender is worked.</p>
+	<p>writing in THREE.js</p>
+	<p>if possible i would try to reimplement gltf loader my self.</p>
+</article>
 <slot />
 
 <script lang="ts">
@@ -25,6 +31,10 @@ import { OrbitControls } from '../libs/OrbitControls';
 import { GLTFLoader } from '../libs/GLTFLoader';
 let canvas: HTMLCanvasElement;
 onMount(async () => {
+
+	const width = window.innerWidth
+	const height = Math.max(500, Math.min(window.innerHeight * 0.6, 700))
+
 	const scene = new Scene();
 	const loader = new GLTFLoader();
 	const gltf = await loader.loadAsync('/model/stick.gltf');
@@ -41,7 +51,7 @@ onMount(async () => {
 	const light = new DirectionalLight(0xffffff, 0.5);
 	scene.add(light);
 
-	const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+	const camera = new PerspectiveCamera(75, width / height, 0.1, 1000);
 	camera.position.set(15, 5, 5);
 	camera.lookAt(0, 0, 0);
 
@@ -67,6 +77,7 @@ onMount(async () => {
 		requestAnimationFrame(animate);
 		// required if controls.enableDamping or controls.autoRotate are set to true
 		controls.update();
+		renderer.setSize(width, height);
 		renderer.render(scene, camera);
 	}
 	animate();
