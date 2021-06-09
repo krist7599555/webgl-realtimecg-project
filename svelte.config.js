@@ -9,7 +9,14 @@ const config = {
 	kit: {
 		host: "https://webgl-realtimecg-project.pages.dev",
 		adapter: adapter(),
-		target: '#svelte'
+		target: '#svelte',
+		vite: {
+			resolve: {
+				alias: {
+					// 'stanford-dragon/4': './node_modules/stanford-dragon/4.js'
+				}
+			}
+		}
 	}
 };
 

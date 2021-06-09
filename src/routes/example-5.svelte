@@ -1,10 +1,10 @@
 <script lang="ts">
 import { onMount, tick } from 'svelte';
 import { Matrix4 } from '@math.gl/core';
-import { flatten } from 'lodash';
+import flatten from 'lodash/flatten.js';
 import * as twgl from 'twgl.js'
 
-import stanfordDragon from 'stanford-dragon/4';
+import stanfordDragon from 'stanford-dragon/4.js';
 
 let canvasIsPressed = false;
 let xRotation = Math.PI / 20;
