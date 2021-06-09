@@ -6,8 +6,8 @@
 	<p>also know a texhnique to create LUMINANCE texture 2D</p>
 	<p>
 		code: 
-		<a href='https://github.com/krist7599555/webgl-realtimecg-project/tree/master/src/routes/example-5.svelte' target="_blank">
-			https://github.com/krist7599555/webgl-realtimecg-project/tree/master/src/example-5.svelte
+		<a href='https://github.com/krist7599555/webgl-realtimecg-project/tree/master/src/routes/example-4.svelte' target="_blank">
+			https://github.com/krist7599555/webgl-realtimecg-project/tree/master/src/example-4.svelte
 		</a>
 	</p>
 </article>

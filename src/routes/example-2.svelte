@@ -1,7 +1,7 @@
 <canvas bind:this={canvas} />
 <article class="container">
 	<h1>GLTF</h1>
-	<p>test that my GLTF file from blender is worked.</p>
+	<p>test that my GLTF file that I mold and coloring in blender is working on THREE.js.</p>
 	<p>writing in THREE.js</p>
 	<p>if possible i would try to reimplement gltf loader my self.</p>
 </article>

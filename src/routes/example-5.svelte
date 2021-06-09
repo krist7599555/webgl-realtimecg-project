@@ -292,7 +292,7 @@ void main(void) {
     [U_LIGHT_MODEL_VIEW]: light_model_view_matrix,
     [U_LIGHT_PROJECTION]: light_projection_matrix,
     [U_PROJECTION]: new Matrix4().perspective({ fovy: Math.PI / 3, aspect: width / height, near: 0.01, far: 900 }),
-    [U_DEPTH_TEXTURE]: shadowFramebufferInfo.attachments[0]
+    [U_DEPTH_TEXTURE]: shadowFramebufferInfo.attachments[0],
   })
 
 	// We rotate the dragon about the y axis every frame
@@ -342,6 +342,7 @@ void main(void) {
     twgl.setUniforms(cameraShaderProgramInfo, {
       [U_MODEL_VIEW]: new Matrix4(camera).multiplyRight(dragonModelMatrix),
       [U_LIGHT_MODEL_VIEW]: new Matrix4(light_model_view_matrix).multiplyRight(dragonModelMatrix),
+			[U_PROJECTION]: new Matrix4().perspective({ fovy: Math.PI / 3, aspect: width / height, near: 0.01, far: 900 }),
       uColor: [0.36, 0.66, 0.8],
     })
     twgl.drawBufferInfo(gl, dragon_buffer);   
@@ -359,9 +360,11 @@ void main(void) {
 
 	// Draw our shadow map and light map every request animation frame
 	function draw() {
+		if (width != window.innerWidth) {
+			width = canvas.width = window.innerWidth
+		}
 		drawShadowMap();
 		drawModels();
-
 		window.requestAnimationFrame(draw);
 	}
 	draw();
@@ -377,6 +380,12 @@ void main(void) {
 	<p>
 		inspiration of shadow map is to render from camera perspective to framebuffer. framebuffer is same for render on screen as example-3 show which contain zyx + w. 
 		we just reuse w from framebuffer to check is pixel (in fragment shader) should be light or shadow.
+	</p>
+	<p>
+		code: 
+		<a href='https://github.com/krist7599555/webgl-realtimecg-project/tree/master/src/routes/example-5.svelte' target="_blank">
+			https://github.com/krist7599555/webgl-realtimecg-project/tree/master/src/example-5.svelte
+		</a>
 	</p>
 </article>
 

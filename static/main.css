@@ -1,6 +1,7 @@
 body {
   margin: 0px;
   font-family: monospace;
+  overflow-x: hidden;
 }
 .container {
   max-width: 800px;

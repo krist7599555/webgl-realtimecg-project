@@ -17,7 +17,7 @@
 	nav {
 	  display: flex;
     justify-content: center;
-		overflow-x: scroll;
+		flex-wrap: wrap;
 	}
 	nav > a {
     padding: 4px
