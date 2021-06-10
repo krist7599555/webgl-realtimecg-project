@@ -88,6 +88,7 @@ onMount(async () => {
   const U_LIGHT_MODEL_VIEW = 'uLightMViewMatrix'
   const U_LIGHT_PROJECTION = 'uLightProjectionMatrix'
 	const U_DEPTH_TEXTURE = 'uDepthColorTexture'
+	const U_COLOR = 'uColor'
 
 	const lightVertexGLSL = `
 attribute vec3 ${A_POSITION};
@@ -160,7 +161,7 @@ varying vec2 vDepthUv;
 varying vec4 shadowPos;
 
 uniform sampler2D ${U_DEPTH_TEXTURE};
-uniform vec3 uColor;
+uniform vec3 ${U_COLOR};
 
 float decodeFloat (vec4 color) {
   const vec4 bitShift = vec4(
@@ -197,17 +198,12 @@ void main(void) {
   }
   amountInLight /= 9.0;
 
-  gl_FragColor = vec4(amountInLight * uColor, 1.0);
+  gl_FragColor = vec4(amountInLight * ${U_COLOR}, 1.0);
 }
 `;
 
-	// Link our light and camera shader programs
-
   const cameraShaderProgramInfo = twgl.createProgramInfo(gl, [cameraVertexGLSL, cameraFragmentGLSL])
-  // const cameraShaderProgram = cameraShaderProgramInfo.program
-
 	const lightShaderProgramInfo = twgl.createProgramInfo(gl, [lightVertexGLSL, lightFragmentGLSL])
-	// const lightShaderProgram = lightShaderProgramInfo.program
 
 	/**
 	 * Setting up our buffered data
@@ -245,11 +241,6 @@ void main(void) {
 	// Then later our camera shader will use `shadowDepthTexture` to determine whether or not fragments
 	// are in the shadow.
   
-  // const shadowDepthTexture = twgl.createTexture(gl, {
-  //   minMag: gl.NEAREST,
-  //   width: shadowDepthTextureSize,
-  //   height: shadowDepthTextureSize,
-  // })
 
 	const renderBuffer = gl.createRenderbuffer();
 	gl.bindRenderbuffer(gl.RENDERBUFFER, renderBuffer);
@@ -312,9 +303,9 @@ void main(void) {
     twgl.setBuffersAndAttributes(gl, lightShaderProgramInfo, dragon_buffer)
     twgl.setUniforms(lightShaderProgramInfo, {
       [U_MODEL_VIEW]: new Matrix4()
-      .rotateY(dragonRotateY)
-      .translate([0, 0, -3])
-      .multiplyLeft(light_model_view_matrix)
+				.rotateY(dragonRotateY)
+				.translate([0, 0, -3])
+				.multiplyLeft(light_model_view_matrix)
     })
     twgl.drawBufferInfo(gl, dragon_buffer)
     twgl.bindFramebufferInfo(gl, null)
@@ -343,15 +334,15 @@ void main(void) {
       [U_MODEL_VIEW]: new Matrix4(camera).multiplyRight(dragonModelMatrix),
       [U_LIGHT_MODEL_VIEW]: new Matrix4(light_model_view_matrix).multiplyRight(dragonModelMatrix),
 			[U_PROJECTION]: new Matrix4().perspective({ fovy: Math.PI / 3, aspect: width / height, near: 0.01, far: 900 }),
-      uColor: [0.36, 0.66, 0.8],
+      [U_COLOR]: [0.36, 0.66, 0.8],
     })
     twgl.drawBufferInfo(gl, dragon_buffer);   
 
     twgl.setUniforms(cameraShaderProgramInfo, {
       [U_MODEL_VIEW]: camera,
       [U_LIGHT_MODEL_VIEW]: light_model_view_matrix,
-      uColor: [0.6, 0.6, 0.6],
-      [U_DEPTH_TEXTURE]: shadowFramebufferInfo.attachments[0]
+      [U_DEPTH_TEXTURE]: shadowFramebufferInfo.attachments[0],
+      [U_COLOR]: [0.6, 0.6, 0.6],
     })
     twgl.setBuffersAndAttributes(gl, lightShaderProgramInfo, floor_buffer)
     twgl.drawBufferInfo(gl, floor_buffer);
