@@ -60,6 +60,18 @@ let canvas: HTMLCanvasElement;
 let width: number
 let height: number
 
+let dragonRotateY = 0;
+$: dragon_model_matrix = new Matrix4().rotateY(dragonRotateY).translate([0, 0, -3])
+$: projection = new Matrix4().perspective({ fovy: Math.PI / 3, aspect: width / height, near: 0.01, far: 900 })
+$: camera = (() => {
+	let _camera = new Matrix4()
+		.rotateX(-xRotation)
+		.rotateY(yRotation)
+		.translate([0, 7, 25])
+	return new Matrix4()
+		.lookAt([_camera[12], _camera[13], _camera[14]], [0, 0, 0], [0, 1, 0]);
+})()
+
 onMount(async () => {
 	await tick()
 	await tick()
@@ -143,8 +155,10 @@ uniform mat4 ${U_LIGHT_PROJECTION};
 
 // Used to normalize our coordinates from clip space to (0 - 1)
 // so that we can access the corresponding point in our depth color texture
-const mat4 texUnitConverter = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.5, 0.5, 0.5, 1.0);
-
+const mat4 texUnitConverter = mat4(0.5, 0.0, 0.0, 0.0, 
+                                   0.0, 0.5, 0.0, 0.0, 
+																	 0.0, 0.0, 0.5, 0.0, 
+																	 0.5, 0.5, 0.5, 1.0);
 varying vec2 vDepthUv;
 varying vec4 shadowPos;
 
@@ -259,42 +273,18 @@ void main(void) {
 	const light_projection_matrix = new Matrix4().ortho({ left: -40, right: 40, bottom: -40, top: 40, near: -40.0, far: 80 });
 	const light_model_view_matrix = new Matrix4().lookAt([0, 2, -3], [0, 0, 0], [0, 1, 0]);
 
-  twgl.setUniforms(lightShaderProgramInfo, {
-    [U_PROJECTION]: light_projection_matrix,
-    [U_MODEL_VIEW]: light_model_view_matrix
-  })
-  
-  twgl.setBuffersAndAttributes(gl, lightShaderProgramInfo, floor_buffer)
-
-	// gl.bindBuffer(gl.ARRAY_BUFFER, floorPositionBuffer);
-	// gl.vertexAttribPointer(vertexPositionAttrib, 3, gl.FLOAT, false, 0, 0);
-
-	// gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, floorIndexBuffer);
-	// gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(floorIndices), gl.STATIC_DRAW);
-
 	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
 	/**
 	 * Scene uniforms
 	 */
-	gl.useProgram(cameraShaderProgramInfo.program);
-
-  twgl.setUniforms(cameraShaderProgramInfo, {
-    [U_LIGHT_MODEL_VIEW]: light_model_view_matrix,
-    [U_LIGHT_PROJECTION]: light_projection_matrix,
-    [U_PROJECTION]: new Matrix4().perspective({ fovy: Math.PI / 3, aspect: width / height, near: 0.01, far: 900 }),
-    [U_DEPTH_TEXTURE]: shadowFramebufferInfo.attachments[0],
-  })
 
 	// We rotate the dragon about the y axis every frame
-	let dragonRotateY = 0;
 
 	// Draw our dragon onto the shadow map
 	function drawShadowMap() {
-		dragonRotateY += 0.01;
-
-    twgl.bindFramebufferInfo(gl, shadowFramebufferInfo) // draw to this frame buffer
 		gl.useProgram(lightShaderProgramInfo.program); // use this shader
+    twgl.bindFramebufferInfo(gl, shadowFramebufferInfo) // draw to this frame buffer
 
 		gl.clearColor(0, 0, 0, 1);
 		gl.clearDepth(1.0);
@@ -302,10 +292,8 @@ void main(void) {
 
     twgl.setBuffersAndAttributes(gl, lightShaderProgramInfo, dragon_buffer)
     twgl.setUniforms(lightShaderProgramInfo, {
-      [U_MODEL_VIEW]: new Matrix4()
-				.rotateY(dragonRotateY)
-				.translate([0, 0, -3])
-				.multiplyLeft(light_model_view_matrix)
+			[U_PROJECTION]: light_projection_matrix,
+      [U_MODEL_VIEW]: new Matrix4(light_model_view_matrix).multiplyRight(dragon_model_matrix)
     })
     twgl.drawBufferInfo(gl, dragon_buffer)
     twgl.bindFramebufferInfo(gl, null)
@@ -314,33 +302,26 @@ void main(void) {
 	// Draw our dragon and floor onto the scene
 	function drawModels() {
 		gl.useProgram(cameraShaderProgramInfo.program);
+		twgl.bindFramebufferInfo(gl, null)
 		gl.viewport(0, 0, width, height);
 		gl.clearColor(0.98, 0.98, 0.98, 1);
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    let camera = new Matrix4()
-      .rotateX(-xRotation)
-      .rotateY(yRotation)
-      .translate([0, 7, 25])
-
-		camera = new Matrix4().lookAt([camera[12], camera[13], camera[14]], [0, 0, 0], [0, 1, 0]);
-
-		var dragonModelMatrix = new Matrix4().rotateY(dragonRotateY).translate([0, 0, -3])
-
-		// We use the light's model view matrix of our dragon so that our camera knows if
-		// parts of the dragon are in the shadow
-		
     twgl.setUniforms(cameraShaderProgramInfo, {
-      [U_MODEL_VIEW]: new Matrix4(camera).multiplyRight(dragonModelMatrix),
-      [U_LIGHT_MODEL_VIEW]: new Matrix4(light_model_view_matrix).multiplyRight(dragonModelMatrix),
-			[U_PROJECTION]: new Matrix4().perspective({ fovy: Math.PI / 3, aspect: width / height, near: 0.01, far: 900 }),
+      [U_LIGHT_MODEL_VIEW]: new Matrix4(light_model_view_matrix).multiplyRight(dragon_model_matrix),
+			[U_LIGHT_PROJECTION]: light_projection_matrix,
+      [U_MODEL_VIEW]: new Matrix4(camera).multiplyRight(dragon_model_matrix),
+			[U_PROJECTION]: projection,
+			[U_DEPTH_TEXTURE]: shadowFramebufferInfo.attachments[0],
       [U_COLOR]: [0.36, 0.66, 0.8],
     })
     twgl.drawBufferInfo(gl, dragon_buffer);   
 
     twgl.setUniforms(cameraShaderProgramInfo, {
-      [U_MODEL_VIEW]: camera,
       [U_LIGHT_MODEL_VIEW]: light_model_view_matrix,
+			[U_LIGHT_PROJECTION]: light_projection_matrix,
+      [U_MODEL_VIEW]: camera,
+			[U_PROJECTION]: projection,
       [U_DEPTH_TEXTURE]: shadowFramebufferInfo.attachments[0],
       [U_COLOR]: [0.6, 0.6, 0.6],
     })
@@ -351,6 +332,7 @@ void main(void) {
 
 	// Draw our shadow map and light map every request animation frame
 	function draw() {
+		dragonRotateY += 0.01;
 		if (width != window.innerWidth) {
 			width = canvas.width = window.innerWidth
 		}
