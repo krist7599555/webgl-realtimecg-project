@@ -62,8 +62,9 @@ let height: number
 
 let dragonRotateY = 0;
 $: dragon_model_matrix = new Matrix4().rotateY(dragonRotateY).translate([0, 0, -3])
-$: projection = new Matrix4().perspective({ fovy: Math.PI / 3, aspect: width / height, near: 0.01, far: 900 })
-$: camera = (() => {
+$: floor_model_matrix = new Matrix4().identity()
+$: screen_projection_matrix = new Matrix4().perspective({ fovy: Math.PI / 3, aspect: width / height, near: 0.01, far: 900 })
+$: camera_model_matrix = (() => {
 	let _camera = new Matrix4()
 		.rotateX(-xRotation)
 		.rotateY(yRotation)
@@ -71,6 +72,10 @@ $: camera = (() => {
 	return new Matrix4()
 		.lookAt([_camera[12], _camera[13], _camera[14]], [0, 0, 0], [0, 1, 0]);
 })()
+
+function mul(lhs: Matrix4, rhs: Matrix4) {
+	return new Matrix4(lhs).multiplyRight(rhs)
+}
 
 onMount(async () => {
 	await tick()
@@ -153,13 +158,12 @@ uniform mat4 ${U_MODEL_VIEW};
 uniform mat4 ${U_LIGHT_MODEL_VIEW};
 uniform mat4 ${U_LIGHT_PROJECTION};
 
-// Used to normalize our coordinates from clip space to (0 - 1)
+// Used to normalize our coordinates from clip space [-1..1] to [0..1] texture space
 // so that we can access the corresponding point in our depth color texture
 const mat4 texUnitConverter = mat4(0.5, 0.0, 0.0, 0.0, 
                                    0.0, 0.5, 0.0, 0.0, 
 																	 0.0, 0.0, 0.5, 0.0, 
 																	 0.5, 0.5, 0.5, 1.0);
-varying vec2 vDepthUv;
 varying vec4 shadowPos;
 
 void main (void) {
@@ -171,7 +175,6 @@ void main (void) {
 	const cameraFragmentGLSL = `
 precision mediump float;
 
-varying vec2 vDepthUv;
 varying vec4 shadowPos;
 
 uniform sampler2D ${U_DEPTH_TEXTURE};
@@ -204,7 +207,12 @@ void main(void) {
   // that is 9/9ths in the shadow.
   for (int x = -1; x <= 1; x++) {
     for (int y = -1; y <= 1; y++) {
-      float texelDepth = decodeFloat(texture2D(${U_DEPTH_TEXTURE}, fragmentDepth.xy + vec2(x, y) * texelSize));
+      float texelDepth = decodeFloat(
+				texture2D(
+					${U_DEPTH_TEXTURE}, 
+					fragmentDepth.xy + vec2(x, y) * texelSize
+				)
+			);
       if (fragmentDepth.z < texelDepth) {
         amountInLight += 1.0;
       }
@@ -293,7 +301,7 @@ void main(void) {
     twgl.setBuffersAndAttributes(gl, lightShaderProgramInfo, dragon_buffer)
     twgl.setUniforms(lightShaderProgramInfo, {
 			[U_PROJECTION]: light_projection_matrix,
-      [U_MODEL_VIEW]: new Matrix4(light_model_view_matrix).multiplyRight(dragon_model_matrix)
+      [U_MODEL_VIEW]: mul(light_model_view_matrix, dragon_model_matrix)
     })
     twgl.drawBufferInfo(gl, dragon_buffer)
     twgl.bindFramebufferInfo(gl, null)
@@ -307,23 +315,25 @@ void main(void) {
 		gl.clearColor(0.98, 0.98, 0.98, 1);
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+		// prettier-ignore
     twgl.setUniforms(cameraShaderProgramInfo, {
-      [U_LIGHT_MODEL_VIEW]: new Matrix4(light_model_view_matrix).multiplyRight(dragon_model_matrix),
+      [U_LIGHT_MODEL_VIEW]: mul(light_model_view_matrix, dragon_model_matrix),
 			[U_LIGHT_PROJECTION]: light_projection_matrix,
-      [U_MODEL_VIEW]: new Matrix4(camera).multiplyRight(dragon_model_matrix),
-			[U_PROJECTION]: projection,
-			[U_DEPTH_TEXTURE]: shadowFramebufferInfo.attachments[0],
-      [U_COLOR]: [0.36, 0.66, 0.8],
+      [U_MODEL_VIEW]:       mul(camera_model_matrix, dragon_model_matrix),
+			[U_PROJECTION]:       screen_projection_matrix,
+			[U_DEPTH_TEXTURE]:    shadowFramebufferInfo.attachments[0],
+      [U_COLOR]:            [0.36, 0.66, 0.8],
     })
     twgl.drawBufferInfo(gl, dragon_buffer);   
 
+		// prettier-ignore
     twgl.setUniforms(cameraShaderProgramInfo, {
-      [U_LIGHT_MODEL_VIEW]: light_model_view_matrix,
+      [U_LIGHT_MODEL_VIEW]: mul(light_model_view_matrix, floor_model_matrix),
 			[U_LIGHT_PROJECTION]: light_projection_matrix,
-      [U_MODEL_VIEW]: camera,
-			[U_PROJECTION]: projection,
-      [U_DEPTH_TEXTURE]: shadowFramebufferInfo.attachments[0],
-      [U_COLOR]: [0.6, 0.6, 0.6],
+      [U_MODEL_VIEW]:       mul(camera_model_matrix, floor_model_matrix),
+			[U_PROJECTION]:       screen_projection_matrix,
+      [U_DEPTH_TEXTURE]:    shadowFramebufferInfo.attachments[0],
+      [U_COLOR]:            [0.6, 0.6, 0.6],
     })
     twgl.setBuffersAndAttributes(gl, lightShaderProgramInfo, floor_buffer)
     twgl.drawBufferInfo(gl, floor_buffer);
