@@ -15,8 +15,10 @@ Krist Pornpairin 6031301721
 
 
 # Normal Map
-https://webgl-realtimecg-project.pages.dev/example-1
-https://github.com/krist7599555/webgl-realtimecg-project/blob/master/src/routes/example-1.svelte
+- https://webgl-realtimecg-project.pages.dev/example-1
+- https://github.com/krist7599555/webgl-realtimecg-project/blob/master/src/routes/example-1.svelte
+
+![image](https://user-images.githubusercontent.com/19445033/121641164-09605200-cab9-11eb-8a05-6e15f423ce6e.png)
 
 
 Normal map เป็นรูปแบบการแสดงผลนึงที่เลือกสีในการแสดงมาจาก normal vector แทน โดยแปลง normal vector xyz เป็น rgb หากสังเกตุดีๆแล้วจะพบว่าภาพส่วนใหญ่เป็นสีฟ้า เกิดจาก normal vector ที่เราเห็น หากมองด้านขวามจะเห็นสีแดง มาจาก vector x และด้านบนเป็นสีเขียวจาก vector y ส่วน vector z เราเห็นเสมออยู่แล้วเพราะถ้าเรามองไม่เห็น มันจะเป็นอีกด้านของวัตถุแทน
@@ -26,26 +28,38 @@ Normal map เป็นรูปแบบการแสดงผลนึงท
 ยังมีเทคนิคที่เรียกว่า normal mapping ที่จะช่วยทให้ของที่เรียบเนียนดูมีมิติมากขึ้น และ parallex mapping ที่ทำให้ normal mapping มองได้หลายๆทิศที่ยังไม่ได้ลองในส่วนนี้ด้วย
 
 # GLTF
-https://webgl-realtimecg-project.pages.dev/example-2
-https://github.com/krist7599555/webgl-realtimecg-project/blob/master/src/routes/example-2.svelte
+- https://webgl-realtimecg-project.pages.dev/example-2
+- https://github.com/krist7599555/webgl-realtimecg-project/blob/master/src/routes/example-2.svelte
+
+![image](https://user-images.githubusercontent.com/19445033/121641206-18df9b00-cab9-11eb-84f3-397890ace27f.png)
+
 
 GLTF เป็น 3d model format ของ khronos group ที่ข้างในเป็น json ที่ประกอบด้วยข้อมูลหลายส่วนไม่ว่าจะเป็น scene camera bone/skeleton texture ที่ครอบคลุมเกือบทุดอย่าง ก็คาดหวังว่าจะลองทำงานไปพร้อมๆกับตัวนี้ดู เพียงแต่ว่ายังไม่ค่อยเข้าใจการทำงานเรื่อง skining เท่าไหร่ เลยได้แค่ลอง prototype ปั่น model แล้วแสดงผลด้วย THREE.js เพียงแค่นั้น
 
 อ่าน specification ของ GLTF เพิ่มเติมได้ที่ https://github.com/KhronosGroup/glTF
 
 # FrameBuffer
-https://webgl-realtimecg-project.pages.dev/example-4
-https://github.com/krist7599555/webgl-realtimecg-project/blob/master/src/routes/example-4.svelte
+- https://webgl-realtimecg-project.pages.dev/example-4
+- https://github.com/krist7599555/webgl-realtimecg-project/blob/master/src/routes/example-4.svelte
+
+![image](https://user-images.githubusercontent.com/19445033/121641235-2137d600-cab9-11eb-8a03-b99dc85de196.png)
+
 
 framebuffer เป็นสิ่งที่เราใช้ render กันจนชินไปแล้ว หน้าจอเราก็เป็นเหมือน framebuffer นึงเหมือนกัน แต่มีบางคลั้งที่เราไม่อยาก render ลงหน้าจอ แต่ render เป็น รูปภาพ แล้วนำไปใช้ต่อทีหลัง การมีของ framebuffer แยกทำให้เกิดสิ่งนั้นได้ บ้างก็ใช้ทำเงาสะท้อน บ้างก็ใช้ผลิตซ้ำ texture รวมทั้งใช้เก็บขอมูลตรงๆเช่น depth buffer ด้วยเช่นกัน
 
 ในการเขียนจะมีส่วนที่น่าสนใจคือตอนกำหนด attachment ที่ยังงงนิดหน่อยว่านอกจาก format เป็น RGBA ก็ยังมีตัวเลือกอีกมากให้เลือกได้
 
+![image](https://user-images.githubusercontent.com/19445033/121641257-27c64d80-cab9-11eb-8c83-2f97ffd3c07e.png)
+
+
 อีกเทคนิคนึงที่ได้จากสิ่งนี้คือการสร้าง texture ที่ไม่จำเป็นต้องเป็น rgba ก็ได้เพื่อประหยัดทรัพยากรในการจำ แล้วก็การกำหนด min mag ก็มีผลในการแสดง texture เล็กๆได้ดี
 
 # Shadow Mapping
-https://webgl-realtimecg-project.pages.dev/example-5
-https://github.com/krist7599555/webgl-realtimecg-project/blob/master/src/routes/example-5.svelte
+- https://webgl-realtimecg-project.pages.dev/example-5
+- https://github.com/krist7599555/webgl-realtimecg-project/blob/master/src/routes/example-5.svelte
+
+![image](https://user-images.githubusercontent.com/19445033/121641278-2f85f200-cab9-11eb-88cf-5b838f0fdb86.png)
+
 
 การเขียนเงาเป็น concept ที่ใช้เพื่อเพิ่มมิติให้ภาพสมจริงขึ้น แต่เพราะ webgl เป็นแค่ drawing api เท่านั้นไม่ได้มีสมองคำนวน เราเลยต้องหาวิธีคำนวนขึ้นมาเอง โดยวิธีที่ใช้คือการ สร้าง depth framebuffer มาเพื่อเก็บความลึกโดยใช้แสงเป็นจุดอ้างอิง แล้ว render ใหม่อีกครั้งโดยครั้งที่สองทุงครั้งที่ render จะเช็คว่าหากตำแหน่งนั้น map ไปยัง depth framebuffer แล้วจะมีระยะห่างเท่ากับที่จำไว้ไหม ถ้าเท่ากันแปลว่าตแหน่งนั้นคือส่วนที่ใกล้แหล่งกำเนิดแสงที่สุดใน ray เดียวกันจึงควรเป็นส่วนสว่าง
 
